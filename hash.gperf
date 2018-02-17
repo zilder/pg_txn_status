@@ -1,0 +1,16 @@
+%{
+#include <string.h>
+#include "pg_txn_status.h"
+%}
+%struct-type
+%define slot-name status
+%define lookup-function-name get_status_code
+struct status_code;
+%%
+begin, 1
+prepare, 2
+commit, 3
+rollback, 4
+complete, 5
+incomplete, 6
+%%

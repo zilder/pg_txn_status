@@ -4,6 +4,8 @@
 #include "utils/hsearch.h"
 #include "utils/memutils.h"
 
+#include "pg_txn_status.h"
+
 PG_MODULE_MAGIC;
 
 #define STATUS_NUM 6
@@ -48,38 +50,17 @@ txn_status_in(PG_FUNCTION_ARGS)
 {
 	char   *statusStr = PG_GETARG_CSTRING(0);
 	int		len = strlen(statusStr);
-	char	result;
+	struct status_code *sc;
 
 	if (len == 0)
 		elog(ERROR, "Empty status name");
 
-	/*
-	 * Use fast filter by the leading letter first, then compare the rest
-	 * of the status literal
-	 */
-	switch (statusStr[0])
-	{
-		case 'b': match_tail(statusStr, "begin"); result = 1; break;
-		case 'p': match_tail(statusStr, "prepare"); result = 2; break;
-		case 'r': match_tail(statusStr, "rollback"); result = 4; break;
-		case 'i': match_tail(statusStr, "incomplete"); result = 6; break;
-		case 'c':
-			/* Two status names start with 'c' */
-			if (strcmp(statusStr, "commit") == 0)
-			{
-				result = 3;
-				break;
-			}
-			if (strcmp(statusStr, "complete") == 0)
-			{
-				result = 5;
-				break;
-			}
-		default:
-			elog(ERROR, UNKNOWN_STATUS, statusStr);
-	}
+	/* Use gperf generated hashing to obtain status code */
+	sc = get_status_code(statusStr, len);
+	if (!sc)
+		elog(ERROR, UNKNOWN_STATUS, statusStr);
 
-	PG_RETURN_CHAR(result);
+	PG_RETURN_CHAR(sc->code);
 }
 
 /*
