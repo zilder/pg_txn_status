@@ -1,0 +1,5 @@
+# pg_txn_status extension
+comment = '1 byte transaction status type extension'
+default_version = '0.1'
+module_pathname = '$libdir/pg_txn_status'
+relocatable = true

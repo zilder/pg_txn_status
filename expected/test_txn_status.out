@@ -1,0 +1,97 @@
+CREATE EXTENSION pg_txn_status;
+/* Valid values */
+SELECT 'begin'::txn_status;
+ txn_status 
+------------
+ begin
+(1 row)
+
+SELECT 'prepare'::txn_status;
+ txn_status 
+------------
+ prepare
+(1 row)
+
+SELECT 'commit'::txn_status;
+ txn_status 
+------------
+ commit
+(1 row)
+
+SELECT 'rollback'::txn_status;
+ txn_status 
+------------
+ rollback
+(1 row)
+
+SELECT 'complete'::txn_status;
+ txn_status 
+------------
+ complete
+(1 row)
+
+SELECT 'incomplete'::txn_status;
+ txn_status 
+------------
+ incomplete
+(1 row)
+
+SELECT NULL::txn_status;
+ txn_status 
+------------
+ 
+(1 row)
+
+/* Invalid values */
+SELECT ''::txn_status;
+ERROR:  Empty status name
+LINE 2: SELECT ''::txn_status;
+               ^
+SELECT 'start'::txn_status;
+ERROR:  Unknown status: 'start'
+LINE 1: SELECT 'start'::txn_status;
+               ^
+SELECT 'completed'::txn_status;
+ERROR:  Unknown status: 'completed'
+LINE 1: SELECT 'completed'::txn_status;
+               ^
+/* Storing values to the table */
+CREATE TABLE test(id serial, status txn_status);
+INSERT INTO test (status)
+VALUES
+	('begin'),
+	('prepare'),
+	('commit'),
+	('rollback'),
+	('complete'),
+	('incomplete');
+SELECT * FROM test;
+ id |   status   
+----+------------
+  1 | begin
+  2 | prepare
+  3 | commit
+  4 | rollback
+  5 | complete
+  6 | incomplete
+(6 rows)
+
+/* Equality operator */
+SELECT 'begin'::txn_status = 'begin'::txn_status;
+ ?column? 
+----------
+ t
+(1 row)
+
+SELECT 'begin'::txn_status = 'commit'::txn_status;
+ ?column? 
+----------
+ f
+(1 row)
+
+SELECT * FROM test WHERE status = 'rollback';
+ id |  status  
+----+----------
+  4 | rollback
+(1 row)
+
