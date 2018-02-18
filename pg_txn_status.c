@@ -11,12 +11,6 @@ PG_MODULE_MAGIC;
 #define STATUS_NUM 6
 #define UNKNOWN_STATUS "Unknown status: '%s'"
 
-#define match_tail(str1, str2) \
-do { \
-	if (strcmp((str1) + 1, (str2) + 1) != 0) \
-		elog(ERROR, UNKNOWN_STATUS, str1); \
-} while(0)
-
 const char *int_to_text_map[] = {
 	"begin",
 	"prepare",
