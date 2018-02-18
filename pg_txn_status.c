@@ -9,9 +9,9 @@ PG_MODULE_MAGIC;
 #define STATUS_NUM 6
 #define UNKNOWN_STATUS "Unknown status: '%s'"
 
-#define match(str1, str2) \
+#define match_tail(str1, str2) \
 do { \
-	if (strcmp(str1, str2) != 0) \
+	if (strcmp((str1) + 1, (str2) + 1) != 0) \
 		elog(ERROR, UNKNOWN_STATUS, str1); \
 } while(0)
 
@@ -54,19 +54,15 @@ txn_status_in(PG_FUNCTION_ARGS)
 		elog(ERROR, "Empty status name");
 
 	/*
-	 * Use fast filter by the leading letter first, then compare the whole
-	 * status name
-	 *
-	 * XXX We could use more sofisticated algorithm and match not the whole
-	 * word, but the rest part of the word without the leading letter. But it
-	 * would require more code and would be harder to read.
+	 * Use fast filter by the leading letter first, then compare the rest
+	 * of the status literal
 	 */
 	switch (statusStr[0])
 	{
-		case 'b': match(statusStr, "begin"); result = 1; break;
-		case 'p': match(statusStr, "prepare"); result = 2; break;
-		case 'r': match(statusStr, "rollback"); result = 4; break;
-		case 'i': match(statusStr, "incomplete"); result = 6; break;
+		case 'b': match_tail(statusStr, "begin"); result = 1; break;
+		case 'p': match_tail(statusStr, "prepare"); result = 2; break;
+		case 'r': match_tail(statusStr, "rollback"); result = 4; break;
+		case 'i': match_tail(statusStr, "incomplete"); result = 6; break;
 		case 'c':
 			/* Two status names start with 'c' */
 			if (strcmp(statusStr, "commit") == 0)
