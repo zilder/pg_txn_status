@@ -17,6 +17,12 @@ or if postgres binaries are not on PATH:
 make install PG_CONFIG=/path/to/pg_config
 ```
 
+Then in psql:
+
+```
+CREATE EXTENSION pg_txn_status;
+```
+
 ## Using
 
 `txn_status` type works similar to enumerated types. It provides six builtin

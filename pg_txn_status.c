@@ -37,7 +37,7 @@ txn_status_out(PG_FUNCTION_ARGS)
 	char	status = PG_GETARG_CHAR(0);
 
 	Assert(status >= 1 && status <= STATUS_NUM);
-	PG_RETURN_CSTRING(int_to_text_map[status - 1]);
+	PG_RETURN_CSTRING(pstrdup(int_to_text_map[status - 1]));
 }
 
 /*
