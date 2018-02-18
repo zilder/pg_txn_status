@@ -5,6 +5,8 @@ representation.
 
 ## Installation
 
+`gperf` utility is required.
+
 To build and install this extension run:
 
 ```
