@@ -8,13 +8,13 @@ representation.
 To build and install this extension run:
 
 ```
-make install USE_PGXS=1
+make install
 ```
 
 or if postgres binaries are not on PATH:
 
 ```
-make install USE_PGXS=1 PG_CONFIG=/path/to/pg_config
+make install PG_CONFIG=/path/to/pg_config
 ```
 
 ## Using
