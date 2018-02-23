@@ -1,8 +1,5 @@
 #include "postgres.h"
 #include "fmgr.h"
-#include "utils/builtins.h"
-#include "utils/hsearch.h"
-#include "utils/memutils.h"
 
 PG_MODULE_MAGIC;
 
